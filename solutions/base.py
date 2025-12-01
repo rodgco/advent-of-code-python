@@ -23,6 +23,7 @@ from typing import (
     final,
     overload,
 )
+from aocd import submit
 
 
 class AoCException(Exception):
@@ -40,6 +41,8 @@ class InputTypes(Enum):
     STRSPLIT = auto()
     # int[], split by a split by a specified separator (default newline)
     INTSPLIT = auto()
+    # int[][], split by two specified serparators (default newline and space)
+    INTSPLIT2 = auto()
 
 
 # almost always int, but occasionally str; None is fine to disable a part
@@ -52,12 +55,18 @@ def print_answer(i: int, ans: ResultType):
         print(f"=== {ans}")
 
 
+def submit_answer(i: int, ans: ResultType, year: int, day: int):
+    part = "a" if i == 1 else "b"
+    submit(ans, part=part, day=day, year=year)
+
+
 InputType = Union[str, int, list[int], list[str], list[list[int]]]
 I = TypeVar("I", bound=InputType)
 
 
 class BaseSolution(Generic[I]):
     separator = "\n"
+    separator2 = " "
 
     # Solution Subclasses define these
     input_type: InputTypes = InputTypes.TEXT
@@ -123,14 +132,16 @@ class BaseSolution(Generic[I]):
         )
         if not input_file.exists():
             raise AoCException(
-                f'Failed to find an input file at path "./{input_file.relative_to(Path.cwd())}". You can run `./start --year {self.year} {self.day}` to create it.'
+                f'Failed to find an input file at path "./{input_file.relative_to(
+                    Path.cwd())}". You can run `./start --year {self.year} {self.day}` to create it.'
             )
 
         data = input_file.read_text().strip("\n")
 
         if not data:
             raise AoCException(
-                f'Found a file at path "./{input_file.relative_to(Path.cwd())}", but it was empty. Make sure to paste some input!'
+                f'Found a file at path "./{input_file.relative_to(
+                    Path.cwd())}", but it was empty. Make sure to paste some input!'
             )
 
         if self.input_type is InputTypes.TEXT:
@@ -142,12 +153,18 @@ class BaseSolution(Generic[I]):
         if (
             self.input_type is InputTypes.STRSPLIT
             or self.input_type is InputTypes.INTSPLIT
+            or self.input_type is InputTypes.INTSPLIT2
         ):
             # default to newlines
             parts = data.split(self.separator)
 
             if self.input_type == InputTypes.INTSPLIT:
                 return [int(i) for i in parts]
+
+            if self.input_type == InputTypes.INTSPLIT2:
+                list1, list2 = zip(
+                    *(map(int, line.split(self.separator2)) for line in parts))
+                return [list(list1), list(list2)]
 
             return parts
 
@@ -161,7 +178,9 @@ class BaseSolution(Generic[I]):
             if result:
                 p1, p2 = result
                 print_answer(1, p1)
+                submit_answer(1, p1, self.year, self.day)
                 print_answer(2, p2)
+                submit_answer(2, p2, self.year, self.day)
             print()
         except TypeError as exc:
             raise ValueError(
@@ -215,6 +234,14 @@ class IntSplitSolution(BaseSolution[list[int]]):
     """
 
     input_type = InputTypes.INTSPLIT
+
+
+class IntSplit2Solution(BaseSolution[list[list[int]]]):
+    """
+    input is a int[][], split by specified separators (default newline and space); specify self.separator and self.separator2 to tweak
+    """
+
+    input_type = InputTypes.INTSPLIT2
 
 
 # https://stackoverflow.com/a/65681955/1825390
@@ -302,7 +329,8 @@ def answer(
             if not self.use_test_data and result is not None and result != expected:
                 _, year, day, _ = self.__module__.split(".")
                 raise AoCException(
-                    f"Failed @answer assertion for {year} / {day} / {func.__name__}:\n  returned: {result}\n  expected: {expected}"
+                    f"Failed @answer assertion for {year} / {day} / {
+                        func.__name__}:\n  returned: {result}\n  expected: {expected}"
                 )
             return result
 
