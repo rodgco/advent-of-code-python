@@ -1,9 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
 
 import argparse
 from pathlib import Path
 
 from misc.date_utils import current_puzzle_year, next_day
+
+from aocd import get_data
 
 PARSER = argparse.ArgumentParser(
     prog="./start", description="Scaffold a new Advent of Code solution"
@@ -17,7 +19,8 @@ PARSER.add_argument(
     ),
     nargs="?",
 )
-PARSER.add_argument("--year", default=current_puzzle_year(), help="Puzzle year")
+PARSER.add_argument(
+    "--year", default=current_puzzle_year(), help="Puzzle year")
 
 if __name__ == "__main__":
     ARGS = PARSER.parse_args()
@@ -36,7 +39,10 @@ if __name__ == "__main__":
     day_dir = Path(year_dir, f"day_{day:02}")
 
     day_dir.mkdir(parents=True, exist_ok=True)
-    Path(day_dir, "input.txt").touch()
+    input_path = Path(day_dir, "input.txt")
+    input_path.write_text(
+        get_data(day=day, year=ARGS.year)
+    )
     Path(day_dir, "input.test.txt").touch()
 
     notes_path = Path(day_dir, "README.md")
@@ -45,7 +51,8 @@ if __name__ == "__main__":
             "\n\n".join(
                 [
                     f"# Day {day} ({ARGS.year})",
-                    f"`TITLE` ([prompt](https://adventofcode.com/{ARGS.year}/day/{day}))",
+                    f"`TITLE` ([prompt](https://adventofcode.com/{
+                        ARGS.year}/day/{day}))",
                     "Use this space for notes on the day's solution and to document what you've learned!",
                     "## Part 1",
                     "## Part 2",
