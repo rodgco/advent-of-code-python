@@ -182,9 +182,10 @@ class BaseSolution(Generic[I]):
             if result:
                 p1, p2 = result
                 print_answer(1, p1)
-                submit_answer(1, p1, self.year, self.day)
                 print_answer(2, p2)
-                submit_answer(2, p2, self.year, self.day)
+                if not self.use_test_data:
+                    submit_answer(1, p1, self.year, self.day)
+                    submit_answer(2, p2, self.year, self.day)
             print()
         except TypeError as exc:
             raise ValueError(
