@@ -42,7 +42,8 @@ class InputTypes(Enum):
     # int[], split by a split by a specified separator (default newline)
     INTSPLIT = auto()
     # int[][], split by two specified serparators (default newline and space)
-    INTSPLIT2 = auto()
+    INTSPLIT2COL = auto()
+    INTSPLIT2ROW = auto()
 
 
 # almost always int, but occasionally str; None is fine to disable a part
@@ -153,7 +154,8 @@ class BaseSolution(Generic[I]):
         if (
             self.input_type is InputTypes.STRSPLIT
             or self.input_type is InputTypes.INTSPLIT
-            or self.input_type is InputTypes.INTSPLIT2
+            or self.input_type is InputTypes.INTSPLIT2COL
+            or self.input_type is InputTypes.INTSPLIT2ROW
         ):
             # default to newlines
             parts = data.split(self.separator)
@@ -161,10 +163,12 @@ class BaseSolution(Generic[I]):
             if self.input_type == InputTypes.INTSPLIT:
                 return [int(i) for i in parts]
 
-            if self.input_type == InputTypes.INTSPLIT2:
-                list1, list2 = zip(
+            if self.input_type == InputTypes.INTSPLIT2COL:
+                return zip(
                     *(map(int, line.split(self.separator2)) for line in parts))
-                return [list(list1), list(list2)]
+
+            if self.input_type == InputTypes.INTSPLIT2ROW:
+                return [list(map(int, line.split(self.separator2))) for line in parts]
 
             return parts
 
@@ -236,12 +240,22 @@ class IntSplitSolution(BaseSolution[list[int]]):
     input_type = InputTypes.INTSPLIT
 
 
-class IntSplit2Solution(BaseSolution[list[list[int]]]):
+class IntSplit2RowSolution(BaseSolution[list[list[int]]]):
     """
     input is a int[][], split by specified separators (default newline and space); specify self.separator and self.separator2 to tweak
+    The input will be broken in a list of lists, each secondary list representing a row of the input
     """
 
-    input_type = InputTypes.INTSPLIT2
+    input_type = InputTypes.INTSPLIT2ROW
+
+
+class IntSplit2ColSolution(BaseSolution[list[list[int]]]):
+    """
+    input is a int[][], split by specified separators (default newline and space); specify self.separator and self.separator2 to tweak
+    The input will be broken ina list of lists, each secondary list representing a column of the input
+    """
+
+    input_type = InputTypes.INTSPLIT2COL
 
 
 # https://stackoverflow.com/a/65681955/1825390
