@@ -23,6 +23,7 @@ from typing import (
     final,
     overload,
 )
+import re
 from aocd import submit
 
 
@@ -44,6 +45,8 @@ class InputTypes(Enum):
     # int[][], split by two specified serparators (default newline and space)
     INTSPLIT2COL = auto()
     INTSPLIT2ROW = auto()
+    # str[][], split by a regular expression
+    STRMATCH = auto()
 
 
 # almost always int, but occasionally str; None is fine to disable a part
@@ -62,24 +65,26 @@ def submit_answer(i: int, ans: ResultType, year: int, day: int):
 
 
 InputType = Union[str, int, list[int], list[str], list[list[int]]]
-I = TypeVar("I", bound=InputType)
+IT = TypeVar("I", bound=InputType)
 
 
-class BaseSolution(Generic[I]):
+class BaseSolution(Generic[IT]):
     separator = "\n"
     separator2 = " "
+    regexp = r','
 
     # Solution Subclasses define these
     input_type: InputTypes = InputTypes.TEXT
     _year: int
     _day: int
 
-    def __init__(self, run_slow=False, is_debugging=False, use_test_data=False):
+    def __init__(self, run_slow=False, is_debugging=False, use_test_data=False, submit=True):
         self.slow = run_slow  # should run slow functions?
         self.is_debugging = is_debugging
         self.use_test_data = use_test_data
+        self.submit = submit
 
-        self.input = cast(I, self.read_input())
+        self.input = cast(IT, self.read_input())
 
     @property
     def year(self):
@@ -172,6 +177,11 @@ class BaseSolution(Generic[I]):
 
             return parts
 
+        if self.input_type is InputTypes.STRMATCH:
+            parts = data.split(self.separator)
+
+            return list(re.search(self.regexp, line).groups() for line in parts)
+
         raise ValueError(f"Unrecognized input_type: {self.input_type}")
 
     @final
@@ -182,9 +192,10 @@ class BaseSolution(Generic[I]):
             if result:
                 p1, p2 = result
                 print_answer(1, p1)
-                print_answer(2, p2)
-                if not self.use_test_data:
+                if not self.use_test_data and self.submit:
                     submit_answer(1, p1, self.year, self.day)
+                print_answer(2, p2)
+                if not self.use_test_data and self.submit:
                     submit_answer(2, p2, self.year, self.day)
             print()
         except TypeError as exc:
@@ -257,6 +268,14 @@ class IntSplit2ColSolution(BaseSolution[list[list[int]]]):
     """
 
     input_type = InputTypes.INTSPLIT2COL
+
+
+class StrMatchRegexpSolution(BaseSolution[list[list[str]]]):
+    """
+    input is a int[][], each line is splited based on a regular expression (default ',')
+    """
+
+    input_type = InputTypes.STRMATCH
 
 
 # https://stackoverflow.com/a/65681955/1825390

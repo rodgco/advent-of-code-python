@@ -49,10 +49,15 @@ PARSER.add_argument(
     action="store_true",
     help="Print information about how long the solution (both parts) took to run",
 )
+PARSER.add_argument(
+  "--no-submit",
+  action="store_true",
+  help="Don't submit result if not running on test data."
+)
 
 
 def main(
-    day: int | None, year: str, slow: bool, debug: bool, test_data: bool, time_it: bool
+    day: int | None, year: str, slow: bool, debug: bool, test_data: bool, time_it: bool, no_submit: bool
 ):
     try:
         # class needs to have this name
@@ -76,7 +81,7 @@ def main(
 
     try:
         solution = solution_class(
-            run_slow=slow, is_debugging=debug, use_test_data=test_data
+            run_slow=slow, is_debugging=debug, use_test_data=test_data, submit=not(no_submit)
         )
 
         start = perf_counter_ns()
@@ -85,6 +90,7 @@ def main(
     except AoCException as e:
         print("ERR:", e)
         sys.exit(1)
+
 
     if time_it:
         print("== Performance")
@@ -97,9 +103,9 @@ if __name__ == "__main__":
 
     if ARGS.profile:
         cProfile.run(
-            "main(ARGS.day, ARGS.year, ARGS.slow, ARGS.debug, ARGS.test_data, False)",
+            "main(ARGS.day, ARGS.year, ARGS.slow, ARGS.debug, ARGS.test_data, False, True)",
             sort="tottime",
         )
     else:
         main(ARGS.day, ARGS.year, ARGS.slow,
-             ARGS.debug, ARGS.test_data, ARGS.time)
+             ARGS.debug, ARGS.test_data, ARGS.time, ARGS.no_submit)
