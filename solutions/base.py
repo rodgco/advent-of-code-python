@@ -8,6 +8,8 @@ If something in here is giving you trouble, please file an issue:
 https://github.com/xavdid/advent-of-code-python-template/issues
 """
 
+import re
+import sys
 from enum import Enum, auto
 from functools import wraps
 from pathlib import Path
@@ -23,7 +25,6 @@ from typing import (
     final,
     overload,
 )
-import re
 from aocd import submit
 
 
@@ -66,6 +67,14 @@ def submit_answer(i: int, ans: ResultType, year: int, day: int):
     submit(ans, part=part, day=day, year=year)
 
 
+def spinning_cursor():
+    """Generator for spinner characters."""
+    while True:
+        for cursor in '|/-\\':
+            yield f"\b{cursor}"
+
+spinner = spinning_cursor()
+
 InputType = Union[str, int, list[int], list[str], list[list[int]]]
 IT = TypeVar("I", bound=InputType)
 
@@ -74,6 +83,8 @@ class BaseSolution(Generic[IT]):
     separator = "\n"
     separator2 = " "
     regexp = r','
+    spinner_count = 0
+
     def fun(text): return text
 
     # Solution Subclasses define these
@@ -226,6 +237,18 @@ class BaseSolution(Generic[IT]):
 
         if trailing_newline:
             print()
+
+    @final
+    def spinner(self, count=100_000):
+        if count < 0:
+            raise ValueError("Spinner count must be greater than zero")
+
+        if self.spinner_count == 0:
+            sys.stdout.write(next(spinner))
+            sys.stdout.flush()
+            self.spinner_count = count
+
+        self.spinner_count -= 1
 
 
 class TextSolution(BaseSolution[str]):

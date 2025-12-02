@@ -19,6 +19,7 @@ class Solution(IntSplit2RowSolution):
         for rng in self.input:
             for id in range(rng[0], rng[1]+1):
                 id_str = str(id)
+                self.spinner()
                 try:
                     arr = split_into_chunks(id_str, 2)
                     if all_equal(arr):
@@ -34,6 +35,7 @@ class Solution(IntSplit2RowSolution):
             for id in range(rng[0], rng[1]+1):
                 id_str = str(id)
                 for chunks in range(2, len(id_str)+1):
+                    self.spinner()
                     try:
                         arr = split_into_chunks(id_str, chunks)
                         if all_equal(arr):
