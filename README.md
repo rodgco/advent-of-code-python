@@ -2,7 +2,7 @@
 
 This is an enhanced version of the Python utility package for the phenomenal [Advent of Code](https://adventofcode.com/) puzzles. It handles creating stub solutions, input parsing, and printing your answer, letting you focus on the actual solve. It uses the [aocd](https://github.com/wimglenn/advent-of-code-data) library to automatically retrieve puzzle input and submit answers.
 
-Originally based on [@xavdid's template](https://github.com/xavdid/advent-of-code), this version includes additional enhancements and features.
+Originally based on [@xavdid's template](https://github.com/xavdid/advent-of-code-python-template), this version includes additional enhancements and features.
 
 ## Quickstart
 
