@@ -200,10 +200,10 @@ class BaseSolution(Generic[IT]):
             if result:
                 p1, p2 = result
                 print_answer(1, p1)
-                if not self.use_test_data and self.submit:
+                if not self.use_test_data and self.submit and p1 is not None:
                     submit_answer(1, p1, self.year, self.day)
                 print_answer(2, p2)
-                if not self.use_test_data and self.submit:
+                if not self.use_test_data and self.submit and p2 is not None:
                     submit_answer(2, p2, self.year, self.day)
             print()
         except TypeError as exc:
