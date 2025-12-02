@@ -9,8 +9,8 @@ class Solution(AnyFunSolution):
     _year = 2024
     _day = 2
 
-    def fun(line):
-        map(int, line.split(" "))
+    def fun(self, line):
+        return list(map(int, line.split(" ")))
 
     # @answer(1234)
     def part_1(self) -> int:
