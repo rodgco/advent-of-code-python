@@ -131,6 +131,10 @@ AoC input takes a number of forms, so there are a number of simple modes for inp
 | `TextSolution`                   | one solid block of text                                   | `abcde`                    |
 | `IntSplitSolution`               | `int[]`, split by a specified separator (default newline) | 1<br>2<br>3<br>4<br>5      |
 | `IntSolution`                    | one number                                                | `12345`                    |
+| `IntSplit2RowSolution`           | `int[][]`, split by two separators (default newline and space); each row becomes a list | 1 2 3<br>4 5 6<br>7 8 9    |
+| `IntSplit2ColSolution`           | `int[][]`, split by two separators (default newline and space); each column becomes a list | 1 2 3<br>4 5 6<br>7 8 9    |
+| `StrMatchRegexpSolution`         | `str[][]`, each line split by a regular expression (default `,`)  | a,b,c<br>d,e,f<br>g,h,i    |
+| `AnyFunSolution`                 | any, processed by custom function `self.fun`            | (depends on your function) |
 
 ```py
 # input file is "12345"
@@ -175,6 +179,66 @@ for BaseClass in [StrSplitSolution, IntSplitSolution]:
 
 # ['1', '2', '3', '4', '5'] (type: <class 'list'>)
 # [1, 2, 3, 4, 5] (type: <class 'list'>)
+```
+
+You can also use the 2D solution classes for matrix-like input:
+
+```py
+# input file is "1 2 3\n4 5 6\n7 8 9"
+
+from ...base import IntSplit2RowSolution, IntSplit2ColSolution
+
+# IntSplit2RowSolution: each row becomes a list
+class Solution(IntSplit2RowSolution):
+    def show_input(self):
+        print(f"{self.input}")
+
+Solution().show_input()
+# [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+# IntSplit2ColSolution: each column becomes a list
+class Solution(IntSplit2ColSolution):
+    def show_input(self):
+        print(f"{self.input}")
+
+Solution().show_input()
+# [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+```
+
+For regex-based splitting:
+
+```py
+# input file is "a,b,c\nd,e,f"
+
+from ...base import StrMatchRegexpSolution
+
+class Solution(StrMatchRegexpSolution):
+    regexp = r','  # split by comma
+
+    def show_input(self):
+        print(f"{self.input}")
+
+Solution().show_input()
+# [('a', 'b', 'c'), ('d', 'e', 'f')]
+```
+
+For custom parsing logic:
+
+```py
+# input file is "1-2,3-4\n5-6,7-8"
+
+from ...base import AnyFunSolution
+
+class Solution(AnyFunSolution):
+    def fun(self, line):
+        pairs = line.split(',')
+        return [[int(x) for x in pair.split('-')] for pair in pairs]
+
+    def show_input(self):
+        print(f"{self.input}")
+
+Solution().show_input()
+# [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
 ```
 
 ### Solution Functions
