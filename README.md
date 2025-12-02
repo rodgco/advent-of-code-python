@@ -1,8 +1,8 @@
-# @xavdid's Python Advent of Code Project Template
+# Advent of Code Python Project Template (Enhanced by rodgco)
 
-This is my tried-and-true Python utility package for the phenomenal [Advent of Code](https://adventofcode.com/) puzzles. It handles creating stub solutions, input parsing, and printing your answer, letting you focus on the actual solve. I've been [using it since 2017](https://github.com/xavdid/advent-of-code). It doesn't do _too_ much though- it doesn't pull or submit your input automatically, so no auth is required.
+This is an enhanced version of the Python utility package for the phenomenal [Advent of Code](https://adventofcode.com/) puzzles. It handles creating stub solutions, input parsing, and printing your answer, letting you focus on the actual solve. It uses the [aocd](https://github.com/wimglenn/advent-of-code-data) library to automatically retrieve puzzle input and submit answers.
 
-Additionally, Over in the main repo, I include a step-by-step [explanation of each puzzle](https://advent-of-code.xavd.id/) if you're in the learning mood!
+Originally based on [@xavdid's template](https://github.com/xavdid/advent-of-code), this version includes additional enhancements and features.
 
 ## Quickstart
 
@@ -10,10 +10,14 @@ To use this base class for your own solutions:
 
 1. Ensure you have Python `3.12` or higher. You can use [mise](https://mise.jdx.dev/) or [pyenv](https://github.com/pyenv/pyenv) to manage your Python versions. It may work on older versions, but `3.12`-specific features will be added without further breaking changes
 2. Create a new repo using this template ([docs](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template#creating-a-repository-from-a-template)) and clone it locally
-3. Start a new solution using `./start`
-4. Edit the newly created file at `solutions/YEAR/day_01/solution.py`
-5. Run your code answers using `./advent`
-6. Repeat and enjoy!
+3. Set up your Advent of Code session token for the [aocd](https://github.com/wimglenn/advent-of-code-data) library. You can either:
+   - Set the `AOC_SESSION` environment variable to your session cookie value
+   - Create `~/.config/aocd/token` file containing your session cookie
+   - See [aocd documentation](https://github.com/wimglenn/advent-of-code-data#setup) for more details on how to get your session token
+4. Start a new solution using `./start`
+5. Edit the newly created file at `solutions/YEAR/day_01/solution.py`
+6. Run your code answers using `./advent`
+7. Repeat and enjoy!
 
 ## Commands
 
@@ -67,6 +71,8 @@ Run a specific day of Advent of Code
 - `--profile`: run solution through a performance profiler
 - `--slow`: specify that long-running solutions (or those requiring manual input) should be run. They're skipped otherwise
 - `--time`: print information about how long solutions took to run. More useful than timing at a shell level, since this only starts the timer once all imports have happened and any `advent`-related code is done.
+- `--no-submit`: don't submit result if not running on test data. By default, solutions are automatically submitted when run with real input.
+- `--spinner`: display a spinner animation while running slow operations. See [spinner](#spinner)
 
 #### Examples
 
@@ -225,6 +231,37 @@ This is helpful for ensuring your answer doesn't change when editing your code a
 ### Debugging
 
 The base class includes a `self.debug` method which will pretty-print all manner of inputs. These only show up when the `--debug` flag is used, making it a convenient way to show debugging info selectively.
+
+### Spinner
+
+For long-running solutions, you can display a spinner animation to show progress. To use it:
+
+1. Call `self.spinner()` in your loop or computationally intensive code:
+
+```py
+class Solution(TextSolution):
+    def part_1(self) -> int:
+        count = 0
+        for item in some_large_list:
+            self.spinner()  # call this each iteration
+            count += process(item)
+        return count
+```
+
+2. Run your solution with the `--spinner` flag to enable the animation:
+
+```bash
+./advent --spinner
+```
+
+The spinner is hidden by default and won't display unless you explicitly enable it with the `--spinner` flag.
+
+You can adjust the `count` parameter to control how frequently the spinner updates. A lower count makes it update more often (more visible), while a higher count makes it update less frequently:
+
+```py
+self.spinner(1000)      # updates every 1,000 iterations
+self.spinner(100_000)   # updates every 100,000 iterations (default)
+```
 
 ### Linting & Type Checking
 
