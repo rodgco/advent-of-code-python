@@ -54,10 +54,15 @@ PARSER.add_argument(
   action="store_true",
   help="Don't submit result if not running on test data."
 )
+PARSER.add_argument(
+  "--spinner",
+  action="store_true",
+  help="Display spinner animation while running slow operations."
+)
 
 
 def main(
-    day: int | None, year: str, slow: bool, debug: bool, test_data: bool, time_it: bool, no_submit: bool
+    day: int | None, year: str, slow: bool, debug: bool, test_data: bool, time_it: bool, no_submit: bool, show_spinner: bool
 ):
     try:
         # class needs to have this name
@@ -81,7 +86,7 @@ def main(
 
     try:
         solution = solution_class(
-            run_slow=slow, is_debugging=debug, use_test_data=test_data, submit=not(no_submit)
+            run_slow=slow, is_debugging=debug, use_test_data=test_data, submit=not(no_submit), show_spinner=show_spinner
         )
 
         start = perf_counter_ns()
@@ -103,9 +108,9 @@ if __name__ == "__main__":
 
     if ARGS.profile:
         cProfile.run(
-            "main(ARGS.day, ARGS.year, ARGS.slow, ARGS.debug, ARGS.test_data, False, True)",
+            "main(ARGS.day, ARGS.year, ARGS.slow, ARGS.debug, ARGS.test_data, False, True, ARGS.spinner)",
             sort="tottime",
         )
     else:
         main(ARGS.day, ARGS.year, ARGS.slow,
-             ARGS.debug, ARGS.test_data, ARGS.time, ARGS.no_submit)
+             ARGS.debug, ARGS.test_data, ARGS.time, ARGS.no_submit, ARGS.spinner)

@@ -92,11 +92,12 @@ class BaseSolution(Generic[IT]):
     _year: int
     _day: int
 
-    def __init__(self, run_slow=False, is_debugging=False, use_test_data=False, submit=True):
+    def __init__(self, run_slow=False, is_debugging=False, use_test_data=False, submit=True, show_spinner=False):
         self.slow = run_slow  # should run slow functions?
         self.is_debugging = is_debugging
         self.use_test_data = use_test_data
         self.submit = submit
+        self.show_spinner = show_spinner
 
         self.input = cast(IT, self.read_input())
 
@@ -242,6 +243,9 @@ class BaseSolution(Generic[IT]):
     def spinner(self, count=100_000):
         if count < 0:
             raise ValueError("Spinner count must be greater than zero")
+
+        if not self.show_spinner:
+            return
 
         if self.spinner_count == 0:
             sys.stdout.write(next(spinner))
