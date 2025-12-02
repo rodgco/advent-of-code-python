@@ -47,6 +47,8 @@ class InputTypes(Enum):
     INTSPLIT2ROW = auto()
     # str[][], split by a regular expression
     STRMATCH = auto()
+    # any, split by a function
+    ANYFUNCT = auto()
 
 
 # almost always int, but occasionally str; None is fine to disable a part
@@ -72,6 +74,7 @@ class BaseSolution(Generic[IT]):
     separator = "\n"
     separator2 = " "
     regexp = r','
+    def fun(text): return text
 
     # Solution Subclasses define these
     input_type: InputTypes = InputTypes.TEXT
@@ -182,6 +185,11 @@ class BaseSolution(Generic[IT]):
 
             return list(re.search(self.regexp, line).groups() for line in parts)
 
+        if self.input_type is InputTypes.ANYFUNCT:
+            parts = data.split(self.separator)
+
+            return list(map(self.fun, line) for line in parts)
+
         raise ValueError(f"Unrecognized input_type: {self.input_type}")
 
     @final
@@ -276,6 +284,14 @@ class StrMatchRegexpSolution(BaseSolution[list[list[str]]]):
     """
 
     input_type = InputTypes.STRMATCH
+
+
+class AnyFunSolution(BaseSolution[any]):
+    """
+    input is a complex type that will be handle by a function provided by variable fun
+    """
+
+    input_type = InputTypes.ANYFUNCT
 
 
 # https://stackoverflow.com/a/65681955/1825390
