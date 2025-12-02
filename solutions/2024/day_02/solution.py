@@ -1,0 +1,27 @@
+# Generated using @xavdid's AoC Python Template: https://github.com/xavdid/advent-of-code-python-template
+
+# puzzle prompt: https://adventofcode.com/2024/day/2
+
+from ...base import AnyFunSolution
+
+
+class Solution(AnyFunSolution):
+    _year = 2024
+    _day = 2
+
+    def fun(line):
+        map(int, line.split(" "))
+
+    # @answer(1234)
+    def part_1(self) -> int:
+        self.debug(self.input)
+
+        pass
+
+    # @answer(1234)
+    def part_2(self) -> int:
+        pass
+
+    # @answer((1234, 4567))
+    # def solve(self) -> tuple[int, int]:
+    #     pass

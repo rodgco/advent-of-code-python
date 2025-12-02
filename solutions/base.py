@@ -188,7 +188,7 @@ class BaseSolution(Generic[IT]):
         if self.input_type is InputTypes.ANYFUNCT:
             parts = data.split(self.separator)
 
-            return list(map(self.fun, line) for line in parts)
+            return [list(map(self.fun, line)) for line in parts]
 
         raise ValueError(f"Unrecognized input_type: {self.input_type}")
 
