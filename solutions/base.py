@@ -50,6 +50,7 @@ class InputTypes(Enum):
     STRMATCH = auto()
     # any, split by a function
     ANYFUNCT = auto()
+    ANYFULLFUNCT = auto()
 
 
 # almost always int, but occasionally str; None is fine to disable a part
@@ -72,6 +73,7 @@ def spinning_cursor():
     while True:
         for cursor in '|/-\\':
             yield f"\b{cursor}"
+
 
 spinner = spinning_cursor()
 
@@ -202,6 +204,9 @@ class BaseSolution(Generic[IT]):
 
             return [self.fun(line) for line in parts]
 
+        if self.input_type is InputTypes.ANYFULLFUNCT:
+            return self.fun(data)
+
         raise ValueError(f"Unrecognized input_type: {self.input_type}")
 
     @final
@@ -319,6 +324,14 @@ class AnyFunSolution(BaseSolution[any]):
     """
 
     input_type = InputTypes.ANYFUNCT
+
+
+class AnyFullFunSolution(BaseSolution[any]):
+    """
+    input is fully sent to the function
+    """
+
+    input_type = InputTypes.ANYFULLFUNCT
 
 
 # https://stackoverflow.com/a/65681955/1825390
