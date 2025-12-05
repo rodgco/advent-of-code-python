@@ -1,4 +1,4 @@
-#  Generated using @xavdid's AoC Python Template: https://github.com/xavdid/advent-of-code-python-template
+# Generated using @rodgco's AoC Python Template: https://github.com/rodgco/advent-of-code-python-template
 
 # puzzle prompt: https://adventofcode.com/2025/day/3
 
@@ -17,7 +17,7 @@ def remove_battery(bank, digits):
                 battery_to_remove = index
                 break
 
-        if battery_to_remove == None:
+        if battery_to_remove is None:
             battery_to_remove = len(bank) - 1
 
         del bank[battery_to_remove]

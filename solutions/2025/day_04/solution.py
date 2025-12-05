@@ -28,8 +28,6 @@ def map_adjacents(location_of_paper_rolls):
                 adjacent_map.setdefault((r, c), 0)
                 adjacent_map[(r, c)] += 1
 
-    print(f"-> {len(adjacent_map)}")
-
     return adjacent_map
 
 
@@ -71,7 +69,6 @@ class Solution(AnyFullFunSolution):
 
         return count
 
-    # @answer(1234)
     def part_2(self) -> int:
         count = 0
 
@@ -90,7 +87,3 @@ class Solution(AnyFullFunSolution):
             count += round_count
 
         return count
-
-    # @answer((1234, 4567))
-    # def solve(self) -> tuple[int, int]:
-    #     pass

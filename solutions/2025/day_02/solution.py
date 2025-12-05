@@ -1,9 +1,10 @@
-# Generated using @xavdid's AoC Python Template: https://github.com/xavdid/advent-of-code-python-template
+# Generated using @rodgco's AoC Python Template: https://github.com/rodgco/advent-of-code-python-template
 
 # puzzle prompt: https://adventofcode.com/2025/day/2
 
-from ...base import IntSplit2RowSolution, answer
 import re
+
+from ...base import IntSplit2RowSolution
 
 
 class Solution(IntSplit2RowSolution):
@@ -17,11 +18,11 @@ class Solution(IntSplit2RowSolution):
         count1 = 0
         count2 = 0
         for rng in self.input:
-            for id in range(rng[0], rng[1] + 1):
+            for product_id in range(rng[0], rng[1] + 1):
                 self.spinner()
-                id_str = str(id)
+                id_str = str(product_id)
                 if re.search(r"^(\d+)\1$", id_str):
-                    count1 += id
+                    count1 += product_id
                 if re.search(r"^(\d+)\1+$", id_str):
-                    count2 += id
+                    count2 += product_id
         return (count1, count2)

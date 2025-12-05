@@ -64,7 +64,8 @@ class Solution(AnyFullFunSolution):
 
         sorted_ranges = sorted(ranges, key=lambda rng: rng[0])
 
-        for idx1, rng1 in enumerate(sorted_ranges[:-1]):
+        for idx1, rng in enumerate(sorted_ranges[:-1]):
+            rng1 = rng
             if rng1 is None:
                 continue
             for idx2, rng2 in enumerate(sorted_ranges[idx1 + 1 :]):
