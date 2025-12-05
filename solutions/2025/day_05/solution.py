@@ -36,15 +36,13 @@ class Solution(AnyFullFunSolution):
     def fun(self, data):
         ranges_block, ids_block = data.split("\n\n")
 
-        ranges = list(
-            map(
-                lambda item: (item[0], item[1]),
-                list(
-                    tuple(map(int, rng.split("-"))) for rng in ranges_block.split("\n")
-                ),
-            )
-        )
-        ids = list(int(id) for id in ids_block.split("\n"))
+        ranges = [
+            (item[0], item[1])
+            for item in [
+                tuple(map(int, rng.split("-"))) for rng in ranges_block.split("\n")
+            ]
+        ]
+        ids = [int(ingredient) for ingredient in ids_block.split("\n")]
 
         return (ranges, ids)
 
@@ -53,9 +51,9 @@ class Solution(AnyFullFunSolution):
 
         fresh = 0
 
-        for id in ids:
+        for ingredient in ids:
             for start, stop in ranges:
-                if id in range(start, stop + 1):
+                if ingredient in range(start, stop + 1):
                     fresh += 1
                     break
 
