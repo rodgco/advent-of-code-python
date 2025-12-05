@@ -5,42 +5,67 @@
 from ...base import AnyFullFunSolution
 
 
+def map_adjacents(location_of_paper_rolls):
+    adjacent_map = {}
+
+    adjacent_deltas = [
+        (-1, -1),
+        (-1, 0),
+        (-1, 1),
+        (0, -1),
+        (0, 1),
+        (1, -1),
+        (1, 0),
+        (1, 1),
+    ]
+
+    for row, col in location_of_paper_rolls:
+        adjacent_map.setdefault((row, col), 0)
+        for deltas in adjacent_deltas:
+            r = row + deltas[0]
+            c = col + deltas[1]
+            if (r, c) in location_of_paper_rolls:
+                adjacent_map.setdefault((r, c), 0)
+                adjacent_map[(r, c)] += 1
+
+    print(f"-> {len(adjacent_map)}")
+
+    return adjacent_map
+
+
+def remove_roll_from_map(adjacent_map, location):
+    row, col = location
+    adjacent_map.pop(location)
+    for row_delta in range(-1, 2):
+        for col_delta in range(-1, 2):
+            r = row + row_delta
+            c = col + col_delta
+            if (r, c) in adjacent_map and (row_delta, col_delta) != (0, 0):
+                adjacent_map[(r, c)] -= 1
+
+
 class Solution(AnyFullFunSolution):
     _year = 2025
     _day = 4
 
-    def fun(self, input):
-        d = {}
-        data = input.split("\n")
-        total_rows = len(data)
-        total_cols = len(data[0])
+    def fun(self, data):
+        location_of_paper_rolls = []
 
-        def add_neighbours(row, col):
-            for rowd in range(-1, 2):
-                for cold in range(-1, 2):
-                    r = row + rowd
-                    c = col + cold
-                    if d.get((r, c)) is not None and (rowd, cold) != (0, 0):
-                        d[(r, c)] += 1
-
-        for row, line in enumerate(data):
+        for row, line in enumerate(data.split("\n")):
             for col, value in enumerate(line):
                 if value == "@":
-                    d.setdefault((row, col), 0)
+                    location_of_paper_rolls.append((row, col))
 
-        for row, line in enumerate(data):
-            for col, value in enumerate(line):
-                if value == "@":
-                    add_neighbours(row, col)
+        self.debug(f"Starting with {len(location_of_paper_rolls)} rolls.")
 
-        return d
-
-    # @answer(1234)
+        return map_adjacents(location_of_paper_rolls)
 
     def part_1(self) -> int:
         count = 0
 
-        for value in self.input.values():
+        adjacent_map = self.input
+
+        for value in adjacent_map.values():
             if value < 4:
                 count += 1
 
@@ -48,7 +73,23 @@ class Solution(AnyFullFunSolution):
 
     # @answer(1234)
     def part_2(self) -> int:
-        pass
+        count = 0
+
+        while True:
+            round_count = 0
+            locations = list(self.input.keys())
+            for location in locations:
+                value = self.input.get(location)
+                if value < 4:
+                    round_count += 1
+                    remove_roll_from_map(self.input, location)
+
+            if round_count == 0:
+                break
+
+            count += round_count
+
+        return count
 
     # @answer((1234, 4567))
     # def solve(self) -> tuple[int, int]:
