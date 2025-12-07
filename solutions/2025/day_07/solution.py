@@ -2,6 +2,9 @@
 
 # puzzle prompt: https://adventofcode.com/2025/day/7
 
+from functools import reduce
+from operator import add
+
 from ...base import AnyFullFunSolution
 
 
@@ -45,7 +48,7 @@ class Solution(AnyFullFunSolution):
 
         return count
 
-    def part_2(self) -> int:
+    def part_2_brute_force(self) -> int:
         start, splitters, depth = self.input
 
         cache = {}
@@ -70,3 +73,21 @@ class Solution(AnyFullFunSolution):
             return count
 
         return beamer(start)
+
+    def part_2(self) -> int:
+        start, splitters, depth = self.input
+
+        beams = {start[1]: 1}
+        count = 0
+
+        for index in range(1, depth):
+            new_beams = beams.copy()
+            for beam in beams:
+                current = beams[beam]
+                if (index, beam) in splitters:
+                    new_beams[beam - 1] = new_beams.setdefault(beam - 1, 0) + current
+                    new_beams[beam + 1] = new_beams.setdefault(beam + 1, 0) + current
+                    new_beams.pop(beam)
+            beams = new_beams
+
+        return reduce(add, beams.values(), 0)
