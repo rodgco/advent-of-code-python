@@ -36,17 +36,17 @@ class Solution(TextSolution):
     def part_2(self) -> int:
         lines = self.input.split("\n")
 
-        numbers_blocks = lines[:-1]
-        symbols_line = lines[-1]
+        numbers_block = lines[:-1]
+        symbols = lines[-1]
 
-        self.debug(numbers_blocks, symbols_line)
+        self.debug(numbers_block, symbols)
 
         count = 0
         numbers = []
 
-        for index in range(len(symbols_line) - 1, -1, -1):
+        for index in range(len(symbols) - 1, -1, -1):
             number_string = ""
-            for line in numbers_blocks:
+            for line in numbers_block:
                 number_string += line[index]
 
             self.debug(f"{index} => {number_string}")
@@ -54,12 +54,12 @@ class Solution(TextSolution):
             if number_string.strip() != "":
                 numbers.append(int(number_string))
 
-            if symbols_line[index] == "+":
+            if symbols[index] == "+":
                 value = reduce(add, numbers, 0)
                 self.debug(f"Adding: {numbers} -> {value}")
                 count += value
                 numbers = []
-            elif symbols_line[index] == "*":
+            elif symbols[index] == "*":
                 value = reduce(mul, numbers, 1)
                 self.debug(f"Mult: {numbers} -> {value}")
                 count += value
