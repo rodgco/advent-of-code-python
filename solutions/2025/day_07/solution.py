@@ -78,12 +78,10 @@ class Solution(AnyFullFunSolution):
         start, splitters, depth = self.input
 
         beams = {start[1]: 1}
-        count = 0
 
         for index in range(1, depth):
             new_beams = beams.copy()
-            for beam in beams:
-                current = beams[beam]
+            for beam, current in beams.items():
                 if (index, beam) in splitters:
                     new_beams[beam - 1] = new_beams.setdefault(beam - 1, 0) + current
                     new_beams[beam + 1] = new_beams.setdefault(beam + 1, 0) + current
